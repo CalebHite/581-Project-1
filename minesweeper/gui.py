@@ -118,11 +118,11 @@ class MinesweeperGUI:
             bar, text="New Game", font=self.text_font, command=self.new_game
         ).pack(side="left")
 
-        # Big face-style label in the corner reporting the current result.
-        self.message_label = tk.Label(
-            bar, text="", bg=PANEL_COLOR, font=self.text_font, fg="#212121"
+        # Status indicator
+        self.status_label = tk.Label(
+            bar, text="Playing", bg=PANEL_COLOR, font=self.text_font, fg="#212121"
         )
-        self.message_label.pack(side="right")
+        self.status_label.pack(side="right")
 
     def _build_grid(self) -> None:
         """Create the A-J / 1-10 labels and the clickable cell widgets.
@@ -224,7 +224,7 @@ class MinesweeperGUI:
         self.board = Board(int(self.mine_var.get()))
         self.game_over = False
         self.seconds = 0
-        self.message_label.config(text="")
+        self.status_label.config(text="Playing", fg="#212121")
         self.timer_label.config(text="Time: 0")
         self.refresh()
 
@@ -269,9 +269,9 @@ class MinesweeperGUI:
                 for cell in row:
                     if cell.is_mine:
                         cell.is_flagged = True
-            self.message_label.config(text="You win!", fg="#2e7d32")
+            self.status_label.config(text="You win!", fg="#2e7d32")
         else:
-            self.message_label.config(text="BOOM! Game over.", fg="#c62828")
+            self._label.config(text="BOOM! Game over.", fg="#c62828")
 
         self.refresh(show_mines=not won)
 
