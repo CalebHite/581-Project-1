@@ -271,7 +271,7 @@ class MinesweeperGUI:
                         cell.is_flagged = True
             self.status_label.config(text="You win!", fg="#2e7d32")
         else:
-            self._label.config(text="BOOM! Game over.", fg="#c62828")
+            self.status_label.config(text="BOOM! Game over.", fg="#c62828")
 
         self.refresh(show_mines=not won)
 
