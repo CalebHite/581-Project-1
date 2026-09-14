@@ -1,14 +1,16 @@
 """
 ================================================================================
 Package:       minesweeper
-Description:   Terminal Minesweeper game. Marks this folder as a Python package
-               so its modules can be imported (e.g. `from minesweeper.board
-               import Board`).
+Description:   Minesweeper game with a clickable graphical window and a
+               terminal fallback. Marks this folder as a Python package so its
+               modules can be imported (e.g. `from minesweeper.board import
+               Board`).
 
 Modules:       config - game constants (board size, mine limits)
                cell   - Cell data class for one board square
                board  - Board class: grid, mines, reveal/flag logic, rendering
                game   - interactive terminal game loop
+               gui    - clickable Tkinter game window
 
 Inputs:        None
 Outputs:       None (package marker only)
