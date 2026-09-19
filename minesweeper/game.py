@@ -17,7 +17,7 @@ External Sources:
                Generated with the assistance of Claude (Anthropic, model
                Claude Opus 5) via Claude Code. Reviewed by the author.
 
-Author:        Caleb Hite
+Author:        Caleb Hite & Kai Barnhart
 Created:       2026-09-14
 ================================================================================
 """
