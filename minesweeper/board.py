@@ -169,9 +169,13 @@ class Board:
         """Flag or unflag a covered cell.
 
         Inputs:  row, col (int) - cell to toggle.
-        Outputs: None. Revealed cells are left unchanged.
+        Outputs: None. Revealed cells and off-board coordinates are ignored.
         """
         # Sourced: Claude AI
+        # Ignore off-board coordinates (see the note in reveal() about negative
+        # indices wrapping around to the far side of the grid).
+        if not self.in_bounds(row, col):
+            return
         cell = self.grid[row][col]
         if not cell.is_revealed:  # flags only make sense on covered cells
             cell.is_flagged = not cell.is_flagged
@@ -181,17 +185,27 @@ class Board:
 
         Inputs:  row, col (int) - cell the player chose to reveal.
         Outputs: bool - True if a mine was hit (game over), otherwise False.
-                 Flagged or already revealed cells are ignored (returns False).
+                 Flagged, already revealed, and off-board coordinates are
+                 ignored (returns False).
         """
         # Sourced: Claude AI
-        # First reveal of the game: place mines now so this cell is safe.
-        if not self.mines_placed:
-            self.place_mines(row, col)
+        # Reject coordinates outside the grid. Python's negative indexing would
+        # silently wrap (grid[-1] is the last row), so an unchecked bad click
+        # would quietly open the wrong cell instead of doing nothing.
+        if not self.in_bounds(row, col):
+            return False
 
         cell = self.grid[row][col]
         # Ignore clicks on cells that are already open or protected by a flag.
+        # This is checked BEFORE mines are placed on purpose: clicking a flagged
+        # cell is not a real reveal, so it must not anchor the guaranteed-safe
+        # first-click zone on a cell the player never actually uncovers.
         if cell.is_revealed or cell.is_flagged:
             return False
+
+        # First real reveal of the game: place mines now so this cell is safe.
+        if not self.mines_placed:
+            self.place_mines(row, col)
         # Stepped on a mine: uncover it and report the loss.
         if cell.is_mine:
             cell.is_revealed = True

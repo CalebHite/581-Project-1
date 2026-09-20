@@ -56,7 +56,10 @@ def play() -> None:
     while True:
         print()
         print(board.render())
-        print(f"Flags remaining: {board.flags_remaining()}")
+        # Status indicator and remaining mine count, both required by the
+        # project specification. Inside this loop the game is always "Playing";
+        # the win and loss branches below print the final status.
+        print(f"Status: Playing   Mines remaining: {board.flags_remaining()}")
 
         # Split input into [command, coordinate]; ignore blank lines.
         parts = input("> ").strip().split()
@@ -89,10 +92,10 @@ def play() -> None:
         if board.reveal(row, col):
             print()
             print(board.render(show_mines=True))
-            print("BOOM! You hit a mine. Game over.")
+            print("Status: Game Over: Loss - you uncovered a mine.")
             return
         if board.is_cleared():
             print()
             print(board.render(show_mines=True))
-            print("You cleared the board. You win!")
+            print("Status: Victory - you cleared every safe cell!")
             return

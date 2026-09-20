@@ -1,0 +1,14 @@
+# Python bytecode caches - generated on every run, should never be committed.
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Editor and OS clutter
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

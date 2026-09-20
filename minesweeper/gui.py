@@ -269,9 +269,9 @@ class MinesweeperGUI:
                 for cell in row:
                     if cell.is_mine:
                         cell.is_flagged = True
-            self.status_label.config(text="You win!", fg="#2e7d32")
+            self.status_label.config(text="Victory", fg="#2e7d32")
         else:
-            self.status_label.config(text="BOOM! Game over.", fg="#c62828")
+            self.status_label.config(text="Game Over: Loss", fg="#c62828")
 
         self.refresh(show_mines=not won)
 
@@ -288,11 +288,14 @@ class MinesweeperGUI:
         # Sourced: Claude AI
         if self.game_over:
             return
-        self._start_timer_if_needed()
 
         if self.board.reveal(row, col):
             self.finish(won=False)
             return
+        # Start the clock only once the board has really been opened. Clicking
+        # a flagged cell does nothing, so it must not start the timer either.
+        if self.board.mines_placed:
+            self._start_timer_if_needed()
         if self.board.is_cleared():
             self.finish(won=True)
             return
@@ -359,7 +362,8 @@ class MinesweeperGUI:
         for r in range(config.ROWS):
             for c in range(config.COLS):
                 self._draw_cell(r, c, show_mines)
-        self.flags_label.config(text=f"Flags remaining: {self.board.flags_remaining()}")
+        # Required display: remaining mine count = total mines minus flags placed.
+        self.flags_label.config(text=f"Mines remaining: {self.board.flags_remaining()}")
 
     def _draw_cell(self, row: int, col: int, show_mines: bool) -> None:
         """Set one cell widget's text, color, and raised/sunken look.
