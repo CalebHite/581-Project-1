@@ -119,10 +119,16 @@ class MinesweeperGUI:
             state="readonly",
             textvariable=self.mine_var,
             font=self.text_font,
+            highlightbackground=PANEL_COLOR,
         ).pack(side="left", padx=(6, 12))
 
+        # Match the panel so controls don't sit on default system chrome colors.
         tk.Button(
-            bar, text="New Game", font=self.text_font, command=self.new_game
+            bar,
+            text="New Game",
+            font=self.text_font,
+            command=self.new_game,
+            highlightbackground=PANEL_COLOR,
         ).pack(side="left")
 
         # Status indicator
