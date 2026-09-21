@@ -67,7 +67,7 @@ class MinesweeperGUI:
         self.root = root
         self.root.title("Minesweeper")
         self.root.configure(bg=PANEL_COLOR)
-        self.root.resizable(False, False)
+        self.root.resizable(True, True)
 
         # Game state that is rebuilt by new_game().
         self.board = Board(config.MIN_MINES)
@@ -76,13 +76,20 @@ class MinesweeperGUI:
         self.timer_job = None  # id of the pending after() callback, if any
 
         # Fonts: one bold face for cells, one plain face for the bars.
-        self.cell_font = tkfont.Font(family="Helvetica", size=14, weight="bold")
-        self.text_font = tkfont.Font(family="Helvetica", size=12)
+        self.cell_font = tkfont.Font(family="Helvetica", size=16, weight="bold")
+        self.text_font = tkfont.Font(family="Helvetica", size=13)
 
         self._build_control_bar()
         self._build_grid()
         self._build_status_bar()
         self.new_game()
+
+        # Lock in a slightly larger starting size, then allow free resizing.
+        self.root.update_idletasks()
+        width = 420
+        height = 480
+        self.root.geometry(f"{width}x{height}")
+        self.root.minsize(width // 2, height // 2)
 
     # ------------------------------------------------------------------
     # Widget construction
@@ -132,7 +139,13 @@ class MinesweeperGUI:
         """
         # Sourced: Claude AI
         frame = tk.Frame(self.root, bg=PANEL_COLOR, padx=10, pady=4)
-        frame.pack()
+        frame.pack(fill="both", expand=True)
+
+        # Let each board column/row grow evenly when the window is resized.
+        for c in range(config.COLS + 1):
+            frame.columnconfigure(c, weight=1 if c else 0)
+        for r in range(config.ROWS + 1):
+            frame.rowconfigure(r, weight=1 if r else 0)
 
         # Column letters across the top; row 0 of the layout grid.
         for c in range(config.COLS):
@@ -142,7 +155,7 @@ class MinesweeperGUI:
                 bg=PANEL_COLOR,
                 font=self.text_font,
                 width=CELL_SIZE,
-            ).grid(row=0, column=c + 1)
+            ).grid(row=0, column=c + 1, sticky="nsew")
 
         # One Label per cell. Labels (rather than Buttons) are used because
         # their background color renders the same on every platform.
@@ -155,7 +168,7 @@ class MinesweeperGUI:
                 font=self.text_font,
                 width=2,
                 anchor="e",
-            ).grid(row=r + 1, column=0, padx=(0, 4))
+            ).grid(row=r + 1, column=0, padx=(0, 4), sticky="nsew")
 
             row_widgets = []
             for c in range(config.COLS):
@@ -167,7 +180,7 @@ class MinesweeperGUI:
                     relief="raised",
                     borderwidth=2,
                 )
-                label.grid(row=r + 1, column=c + 1, padx=1, pady=1)
+                label.grid(row=r + 1, column=c + 1, padx=1, pady=1, sticky="nsew")
 
                 # Default arguments capture this cell's coordinates so every
                 # widget reports its own position instead of the loop's last one.
